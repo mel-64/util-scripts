@@ -148,12 +148,13 @@ fn create_new_request(state: &State, agent: Agent) -> Result<BufReader<impl Read
 
     let agent = agent.get(url);
 
-    let res = if let Some(creds) = &state.credentials {
+    let agent = if let Some(creds) = &state.credentials {
         agent.header("Authorization", creds)
     } else {
         agent
-    }
-    .call()?;
+    };
+
+    let res = agent.call()?;
 
     let (_, body) = res.into_parts();
     println!("Connection to {} established!", state.url);
