@@ -132,6 +132,9 @@ fn main() -> Result<(), anyhow::Error> {
 fn create_new_request(state: &State, agent: Agent) -> Result<BufReader<impl Read>, anyhow::Error> {
     // There's no UTF-8 char that is a nullbyte.
     // So if the last message ID is empty, we create an url without the `since=` postfix
+    //
+    // Using &String here as a stringslice would require an additional allocation in the else
+    // block
     let url: &String = if state.last_msg_id[0] != 0 {
         &format!(
             "{}?since={}",
